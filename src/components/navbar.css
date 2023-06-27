@@ -1,0 +1,352 @@
+*{
+    margin: 0;
+    padding: 0;
+  }
+  
+  .wrapper{
+    width: 100%;
+    height: 100vh;
+    /* max-width: 100%; */
+    position: absolute;
+  }
+  .left-panel{
+    position: absolute;
+    width: 100px;
+    height: calc(100vh - 2rem);
+    top: 1rem;
+    z-index: 1;
+  }
+  
+  .right-panel{
+    position: fixed;
+    width: 400px;
+    right: 0rem;
+    top: 5.1rem;
+    z-index: 1;
+    background-color: rgb(255, 255, 255);
+    height: 100vh;
+    display: block;
+    transition: 0.5s ease;
+    transform: translateX(100%);
+    max-height: 100vh;
+    overflow: auto;
+  }
+  .div__search {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    width: 300px;
+    height: 100px;
+  }
+  .div__search .search {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    background: rgb(124, 124, 124);
+    border-radius: 50%;
+    transition: all 1s;
+    z-index: 4;
+    /* box-shadow: 0 0 25px 0 rgba(0, 0, 0, 0.4); */
+  }
+  .div__search .search:hover {
+    cursor: pointer;
+  }
+  .div__search .search::before {
+    content: "";
+    position: absolute;
+    margin: auto;
+    top: 13px;
+    right: 0;
+    bottom: 0;
+    left: 10px;
+    width: 7px;
+    height: 2px;
+    background: white;
+    transform: rotate(45deg);
+    transition: all 0.5s;
+  }
+  .div__search .search::after {
+    content: "";
+    position: absolute;
+    margin: auto;
+    top: -5px;
+    right: 0;
+    bottom: 0;
+    left: -5px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid white;
+    transition: all 0.5s;
+  }
+  .div__search input {
+    font-family: "Inconsolata", monospace;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    outline: none;
+    border: 1px solid black;;
+    background: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    text-shadow: 0 0 10px rgba(211, 211, 211, 0.51);
+    padding: 0 80px 0 20px;
+    border-radius: 30px;
+    /* box-shadow: 0 0 25px 0 rgb(187, 187, 187), 0 20px 25px 0 rgba(0, 0, 0, 0.2); */
+    transition: all 1s;
+    opacity: 0;
+    z-index: 5;
+    font-weight: bolder;
+    letter-spacing: 0.1em;
+  }
+  .div__search input:hover {
+    cursor: pointer;
+  }
+  .div__search input:focus {
+    width: 300px;
+    opacity: 1;
+    cursor: text;
+  }
+  .div__search input:focus ~ .search {
+    right: -260px;
+    background: #151515;
+    z-index: 6;
+  }
+  .div__search input:focus ~ .search::before {
+    top: 0;
+    left: 0;
+    width: 20px;
+  }
+  .div__search input:focus ~ .search::after {
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 2px;
+    border: none;
+    background: white;
+    border-radius: 0%;
+    transform: rotate(-45deg);
+  }
+  .div__search input::placeholder {
+    color: rgb(66, 66, 66);
+    opacity: 0.5;
+    font-weight: bolder;
+  }
+  .close{
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background-color: #fff; /* Màu nền thanh navbar */
+    z-index: 999;
+    width: 100%;
+    height: 40px;
+  }
+  .close i{
+    float: left;
+    font-size: 25px;
+    margin-left: 15px;
+    line-height: 40px;
+    cursor: pointer;
+  }
+  
+  /* button .left-panel */
+  .radio-buttons {
+    margin-top: 10px;
+    position: relative;
+    margin-left: 10px;
+    top:30%;
+    display: block;
+  }
+  
+  .radio-buttons label {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .radio-buttons input[type="radio"] {
+    display: none;
+    background-color: aliceblue;
+  }
+  
+  .radio-buttons span {
+    border-radius: 15px;
+    width: 70px;
+    height: 70px;
+    line-height: 48px;
+    text-align: center;
+    background: #fff;
+  }
+  .radio-buttons span img{
+    width: 50%;
+    height: 50%;
+  }
+  .radio-buttons span p{
+    margin-top: -15px;
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .radio-buttons input[type="radio"]:checked + span {
+    background-color: #E43765;
+    color: white;
+  }
+  @media (max-width: 991px){
+    .left-panel{
+        width: 100%;
+        height: 100px;
+        top: 80%;
+  
+    }
+    .radio-buttons {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+        float: inline-end;
+        height: 100%;
+    }
+  }
+  /* Style for the zoom in and zoom out buttons */
+  .maplibregl-ctrl-group{
+  border-radius: 50px !important;
+  width: 40px;
+  top: -30px !important;
+  margin: 0 20px 30px 0 !important;
+  }
+  .maplibregl-ctrl-zoom-in, .maplibregl-ctrl-zoom-out {
+  background-color: #fff;
+  border-radius: 50%;
+  border: 2px solid #007cbf;
+  color: #000000;
+  font-size: 24px;
+  height: 40px;
+  line-height: 38px;
+  padding: 0;
+  text-align: center;
+  width: 40px;
+  margin: 8px 5px;
+  }
+  .maplibregl-ctrl-zoom-in:hover, .maplibregl-ctrl-zoom-out:hover {
+  cursor: pointer;
+  background: none;
+  }
+  
+  #img-address{
+  max-width: 100%;
+  height: auto;
+  max-height: 250px;
+  }
+  #listul{
+  text-align: center;
+  }
+  .coordinates {
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  position: absolute;
+  bottom: 40px;
+  left: 10px;
+  padding: 5px 10px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 18px;
+  border-radius: 3px;
+  display: none;
+  }
+  
+  #suggestions-list{
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  width: 300px;
+  height: 100px;
+  z-index: 1;
+  }
+  #suggestions-list li{
+  list-style-type: none;
+  background-color: #fff;
+  padding: 10px 10px;
+  margin: 5px 0px;
+  cursor: pointer;
+  transform: translateX(-20px);
+  }
+  .call{
+  margin-bottom: 100px;
+  }
+  .call i{
+  width: 20px;
+  }
+  
+  #input-tim{
+    margin: 50px 0 0 50px;
+    position: absolute;
+    z-index: 1;
+  }
+  #input-tim input{
+    margin: 20px;
+  }
+  #input-tim button{
+    margin-left: 15px;
+    margin-bottom: 20px;
+  }
+  #input-tim{
+    display: flex;
+  }
+  #input-tim p{
+    margin-left: 50px;
+  }
+  #button-search{
+    position: absolute;
+    z-index: 1;
+    margin: 100px 0 0 70px;
+  }
+  #suggestions-list-street{
+    position: relative;
+    top: 70px;
+    right: 20px;
+    width: 300px;
+    height: 100px;
+    z-index: 4;
+    }
+    #suggestions-list-street li{
+    list-style-type: none;
+    background-color: #fff;
+    padding: 10px 10px;
+    margin: 5px 0px;
+    cursor: pointer;
+    transform: translateX(-20px);
+    }
+    
+    #suggestions-list-street-end{
+      position: relative;
+      top: 70px;
+      left: 0px;
+      width: 300px;
+      height: 100px;
+      z-index: 4;
+      }
+      #suggestions-list-street-end li{
+      list-style-type: none;
+      background-color: #fff;
+      padding: 10px 10px;
+      margin: 5px 0px;
+      cursor: pointer;
+      transform: translateX(-20px);
+      }
+  
+      #start-street{
+        width: 180px;
+      }
+      #end-street{
+        width: 180px;
+      }
