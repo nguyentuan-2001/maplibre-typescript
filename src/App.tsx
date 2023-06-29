@@ -1,14 +1,13 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Navbar from './components/navbar';
+import MapComponent from './map/map';
 
-function App() {
+
+const App: React.FC = () => {
   return (
-    <div className="map-wrap">
-       <Navbar/>
+    <div>
+      <MapComponent />
     </div>
   );
-}
+};
 
 export default App;

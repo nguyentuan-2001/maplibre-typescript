@@ -1,7 +1,7 @@
 import React from 'react';
 import './navbar.css';
 
-export default function Navbar(){
+const Navbar = () => {
   return (
     <div className="wrapper">
       <div className="div__search">
@@ -9,6 +9,7 @@ export default function Navbar(){
         <div className="search"></div>
       </div>
       <ul id="suggestions-list"></ul>
+
       <div className="left-panel">
         <div className="radio-buttons">
           <label className="radio-label">
@@ -103,9 +104,10 @@ export default function Navbar(){
         <button className="btn btn-primary" id="search-street">
           Tìm đường
         </button>
+        <button className='btn btn-primary' id='search-address'>Tìm điểm</button>
       </div>
 
-      <div id="map"></div>
+      <div id="map" style={{ width: '100%', height: '100vh' }} />
 
       <div className="right-panel">
         <div className="card">
@@ -139,5 +141,7 @@ export default function Navbar(){
         </div>
       </div>
     </div>
-  );
+  )
 }
+
+export default Navbar
