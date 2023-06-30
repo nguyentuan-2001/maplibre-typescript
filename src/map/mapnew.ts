@@ -1,6 +1,6 @@
-import maplibregl from 'maplibre-gl';
+import maplibregl,{Map} from 'maplibre-gl';
 
-export const createMap = () => {
+export const createMap = (): Map => {
   const west: number = 109.223122; // Tọa độ tây
   const east: number = 109.266014; // Tọa độ đông
   const north: number = 12.234198; // Tọa độ bắc

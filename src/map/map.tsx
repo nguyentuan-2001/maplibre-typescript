@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import maplibregl from 'maplibre-gl';
+import maplibregl, { Map, Marker } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import PathFinder from "geojson-path-finder";
 import { point } from "@turf/helpers";
@@ -12,328 +12,47 @@ import water_areas from '../geojson/water_areas.json';
 import dataroad from '../geojson/map.json';
 import datamap from '../geojson/admin_units_level6.json';
 import { createMap } from './mapnew';
-import MapStart from './mapstart';
-import {MapSt} from './mapst';
+import overMap from './topographic';
+import { markerImage, zoom } from './markerimage';
+import { closeRightPanel, showLocationDetail } from './showinformation';
+import { search, updateSuggestions } from './search';
+
+
 const roads = require('../geojson/road.geojson');
+
 
 const MapComponent: React.FC = () => {
   useEffect(() => {
+    //start map
     const map = createMap();
-    
-    
 
+    //load map
+    overMap(map);
+  
+    // load marker
     map.on('load', () => {
-      for (const feature of data.features) {
-        const el = document.createElement('div');
-          el.className = 'marker';
+      const marker = markerImage(map);
+      search(map, marker);
+      const searchInput = document.getElementById('search-input') as HTMLInputElement;
 
-          const img = document.createElement('img');
-          img.src = feature.properties.image_url_1;
-          img.className = 'marker-image';
-          img.style.cursor = 'pointer';
-          img.style.width = feature.properties.iconSize[0] + 'px';
-          img.style.height = feature.properties.iconSize[1] + 'px';
-          img.style.borderRadius = '50px';
-
-          el.appendChild(img);
-
-          const marker = new maplibregl.Marker(el)
-            .setLngLat(feature.geometry.coordinates as maplibregl.LngLatLike)
-            .addTo(map)
-            .getElement()
-            .addEventListener('click', createMarkerClickHandler(feature));
-
-        document.getElementById('shopping')?.addEventListener('change', function() {
-          const shoppingCheckbox = this as HTMLInputElement;
-          if (shoppingCheckbox.checked) {
-            map.setFilter('vin-name', ['==', ['get', 'type'], 'shopping']);
-          } else {
-            map.setFilter('vin-name', null);
-          }
-          if (feature.properties.type === 'shopping') {
-            el.style.display = 'block';
-          }
-          else if (feature.properties.type === 'restaurant') {
-            el.style.display = 'none';
-          }
-          else if (feature.properties.type === 'atraction') {
-            el.style.display = 'none';
-          }
+      searchInput.addEventListener('input', ()=> {
+        const searchText = searchInput.value;
+        const suggestions = data.features.filter(function(feature) {
+            return feature.properties.name.toLowerCase().includes(searchText.toLowerCase());
         });
-
-        document.getElementById('restaurant')?.addEventListener('change', function() {
-          const restaurantCheckbox = this as HTMLInputElement;
-          if (restaurantCheckbox.checked) {
-            map.setFilter('vin-name', ['==', ['get', 'type'], 'restaurant']);
-          } else {
-            map.setFilter('vin-name', null);
-          }
-          if (feature.properties.type === 'shopping') {
-            el.style.display = 'none';
-          }
-          else if (feature.properties.type === 'restaurant') {
-            el.style.display = 'block';
-          }
-          else if (feature.properties.type === 'atraction') {
-            el.style.display = 'none';
-          }
-        });
-
-        document.getElementById('atraction')?.addEventListener('change', function() {
-          const atractionCheckbox = this as HTMLInputElement;
-          if (atractionCheckbox.checked) {
-            map.setFilter('vin-name', ['==', ['get', 'type'], 'atraction']);
-          } else {
-            map.setFilter('vin-name', null);
-          }
-          if (feature.properties.type === 'atraction') {
-            el.style.display = 'block';
-          }
-          else if (feature.properties.type === 'shopping') {
-            el.style.display = 'none';
-          }
-          else if (feature.properties.type === 'restaurant') {
-            el.style.display = 'none';
-          }
-        });
-
-        document.getElementById('all')?.addEventListener('change', function() {
-          const allCheckbox = this as HTMLInputElement;
-          if (allCheckbox.checked) {
-            map.setFilter('vin-name', null);
-            el.style.display = 'block';
-          }
-        });
-
-      }
-    });
-    map.on("zoom", () => {
-      for (const feature of data.features) {
-        const marker = new maplibregl.Marker().setLngLat(feature.geometry.coordinates as maplibregl.LngLatLike);
-        const el = marker.getElement();
         
-        // Lấy độ zoom hiện tại của bản đồ
-        const currentZoom = map.getZoom();
-        
-        // Lấy kích thước ban đầu của hình ảnh
-        const width = 40;
-        const height = 40;
-    
-        const imgElements = document.querySelectorAll<HTMLImageElement>(".marker-image");
-        let newWidth: number, newHeight: number;
-        
-        // Tính toán kích thước mới dựa trên độ zoom hiện tại của bản đồ
-        imgElements.forEach((imgElement) => {
-          if (currentZoom <= 15) {
-            newWidth = 0;
-            newHeight = 0;
-    
-            imgElement.addEventListener("mouseover", function () {
-              // Tăng kích thước của thẻ khi con trỏ chuột hover vào
-              imgElement.style.width = "0px";
-              imgElement.style.height = "0px";
-            });
-            imgElement.addEventListener("mouseout", function () {
-              // Khôi phục kích thước ban đầu
-              imgElement.style.width = "0px";
-              imgElement.style.height = "0px";
-            });
-    
-          } else if (currentZoom > 15 && currentZoom < 15.5) {
-            newWidth = width * 0.1;
-            newHeight = height * 0.1;
-    
-            imgElement.addEventListener("mouseover", function () {
-              // Tăng kích thước của thẻ khi con trỏ chuột hover vào
-              imgElement.style.width = "8px";
-              imgElement.style.height = "8px";
-            });
-            imgElement.addEventListener("mouseout", function () {
-              // Khôi phục kích thước ban đầu
-              imgElement.style.width = "4px";
-              imgElement.style.height = "4px";
-            });
-    
-          } else if (currentZoom > 15.5 && currentZoom < 16.5) {
-            newWidth = width * 0.5;
-            newHeight = height * 0.5;
-    
-            imgElement.addEventListener("mouseover", function () {
-              // Tăng kích thước của thẻ khi con trỏ chuột hover vào
-              imgElement.style.width = "40px";
-              imgElement.style.height = "40px";
-            });
-            imgElement.addEventListener("mouseout", function () {
-              // Khôi phục kích thước ban đầu
-              imgElement.style.width = "20px";
-              imgElement.style.height = "20px";
-            });
-    
-          } else if (currentZoom > 16.5 && currentZoom < 17.5) {
-            newWidth = width;
-            newHeight = height;
-    
-            imgElement.addEventListener("mouseover", function () {
-              // Tăng kích thước của thẻ khi con trỏ chuột hover vào
-              imgElement.style.width = "70px";
-              imgElement.style.height = "70px";
-            });
-            imgElement.addEventListener("mouseout", function () {
-              // Khôi phục kích thước ban đầu
-              imgElement.style.width = "40px";
-              imgElement.style.height = "40px";
-            });
-    
-          } else if (currentZoom > 17.5 && currentZoom < 19) {
-            newWidth = width * 1.6;
-            newHeight = height * 1.6;
-    
-            imgElement.addEventListener("mouseover", function () {
-              // Tăng kích thước của thẻ khi con trỏ chuột hover vào
-              imgElement.style.width = "100px";
-              imgElement.style.height = "100px";
-            });
-            imgElement.addEventListener("mouseout", function () {
-              // Khôi phục kích thước ban đầu
-              imgElement.style.width = "64px";
-              imgElement.style.height = "64px";
-            });
-    
-          }
-          
-          // Cập nhật kích thước của hình ảnh
-          imgElement.style.width = `${newWidth}px`;
-          imgElement.style.height = `${newHeight}px`;
-        });
-      }
-    });
-
-    // open table information
-    function openRightPanel() {
-      const elm = document.querySelector<HTMLElement>(".wrapper .right-panel");
-      if (elm) {
-        elm.style.transform = "translateX(0%)";
-      }
-    }
-    
-    function closeRightPanel() {
-      const elm = document.querySelector<HTMLElement>(".wrapper .right-panel");
-      if (elm) {
-        elm.style.transform = "translateX(100%)";
-      }
-    }
-    
-    document.getElementById('closeRight')?.addEventListener('click', function() {
-      closeRightPanel();
-    });
-    
-    function showLocationDetail(location: any) {
-      const name = location.properties.name;
-      const listul = document.getElementById("listul") as HTMLDivElement;
-      if (listul) {
-        listul.innerHTML = name;
-      }
-      
-      const img = location.properties.image_url_2;
-      const imgAddress = document.getElementById("img-address") as HTMLImageElement;
-      if (imgAddress) {
-        imgAddress.src = img;
-      }
-      
-      const desc = location.properties.desc;
-      const accordionex = document.getElementById("accordionex") as HTMLDivElement;
-      if (accordionex) {
-        accordionex.innerHTML = desc;
-      }
-      
-      openRightPanel();
-    }
-    
-    var marker: maplibregl.Marker;
-    map.on('load', () => {
-      marker = new maplibregl.Marker({color: "#FF0000",draggable: true,anchor: "bottom"})
-      .setLngLat([ 109.240512, 12.218791 ])
-      .addTo(map);
-    });
-    
-    function createMarkerClickHandler(feature: any) {
-      return function() {
-        // Event click on marker
-        showLocationDetail(feature);
-        const lngLat = feature.geometry.coordinates;
-        marker.setLngLat(lngLat);
-        map.setCenter(lngLat);
-        map.setZoom(18);
-      };
-    }
-
-    //search input
-    const searchInput = document.getElementById('search-input') as HTMLInputElement;
-    searchInput.addEventListener('change', () => {
-      const searchText = searchInput.value;
-      const allAddress = data.features.filter((feature: any) => {
-        return feature.properties.name.toLowerCase().includes(searchText.toLowerCase());
+        updateSuggestions(suggestions, map, marker);
       });
-
-      function getBounds(features: any[]) {
-        const bounds = new maplibregl.LngLatBounds();
-        features.forEach((feature: any) => {
-          bounds.extend(feature.geometry.coordinates);
-        });
-        return bounds;
-      }
-
-      if (allAddress.length > 0) {
-        const firstAddress = allAddress[0];
-        const lngLat: [number, number] = firstAddress.geometry.coordinates as [number, number];
-        if (marker) {
-          marker.setLngLat(lngLat);
-          map.setCenter(lngLat);
-          map.setZoom(18);
-          map.fitBounds(getBounds(allAddress), {
-            padding: 50
-          });
-        }
-        showLocationDetail(firstAddress);
-        openRightPanel();
-      }
     });
-    //search list
-    const suggestionsList = document.getElementById('suggestions-list') as HTMLSelectElement;
-    function updateSuggestions(suggestions: any[]) {
-        const searchText = searchInput.value.trim();
-        suggestionsList.innerHTML = '';
-        
-        if (searchText === '') {
-            suggestionsList.style.display = 'none';
-            return;
-        }            
-        suggestions.forEach(function(suggestion) {
-            const li = document.createElement('li');
-            li.textContent = suggestion.properties.name;
-            li.addEventListener('click', function() {
-                const lngLat= suggestion.geometry.coordinates;
-                marker.setLngLat(lngLat); 
-                map.setCenter(lngLat);
-                map.setZoom(18);
-                showLocationDetail(suggestion);
-                openRightPanel();
-            });
-            suggestionsList.appendChild(li);
-        });
-        
-        suggestionsList.style.display = 'block';
-    }
+
+    //zoom marker
+    zoom(map);
     
-    searchInput.addEventListener('input', function() {
-      const searchText = searchInput.value;
-      const suggestions = data.features.filter(function(feature) {
-          return feature.properties.name.toLowerCase().includes(searchText.toLowerCase());
-      });
-      
-      updateSuggestions(suggestions);
-    });
-
+    //close right panel
+    closeRightPanel();
+    
+    
+    
     // update option list
     function updateOptions(options: string[], selectElement: HTMLSelectElement) {
       // delete list
