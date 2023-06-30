@@ -197,7 +197,7 @@
     font-weight: bold;
   }
   .radio-buttons input[type="radio"]:checked + span {
-    background-color: #E43765;
+    background-color: #ff6060;
     color: white;
   }
   @media (max-width: 991px){

@@ -1,13 +1,10 @@
-import maplibregl, { Map } from 'maplibre-gl';
+import { Map } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-
 import data from '../geojson/data.json';
-import buildings from '../geojson/buildings.json';
-import water_areas from '../geojson/water_areas.json';
-import dataroad from '../geojson/map.json';
-import datamap from '../geojson/admin_units_level6.json';
-
 const roads = require('../geojson/road.geojson');
+const datamap = require('../geojson/admin_units_level6.geojson');
+const buildings = require('../geojson/buildings.geojson');
+const water_areas = require('../geojson/water_areas.geojson');
 
 function overMap(map: Map){
   map.on('load',(e)=>{
@@ -57,7 +54,7 @@ function overMap(map: Map){
   
     map.addSource("street", {
         type: "geojson",
-        data: dataroad,
+        data: roads,
     });
   
     map.addLayer({

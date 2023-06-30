@@ -1,19 +1,6 @@
-import React, { useEffect, useRef } from 'react';
 import maplibregl, { Map, Marker } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import PathFinder from "geojson-path-finder";
-import { point } from "@turf/helpers";
-import * as geolib from 'geolib';
-
-import Navbar from '../components/navbar';
 import data from '../geojson/data.json';
-import buildings from '../geojson/buildings.json';
-import water_areas from '../geojson/water_areas.json';
-import dataroad from '../geojson/map.json';
-import datamap from '../geojson/admin_units_level6.json';
-import { createMap } from './mapnew';
-import overMap from './topographic';
-import { markerImage, zoom } from './markerimage';
 import { showLocationDetail } from './showinformation';
 
 

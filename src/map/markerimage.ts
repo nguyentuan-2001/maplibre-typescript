@@ -1,24 +1,11 @@
-import React, { useEffect, useRef } from "react";
 import maplibregl, { Map, Marker } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import PathFinder from "geojson-path-finder";
-import { point } from "@turf/helpers";
-import * as geolib from "geolib";
-
-import Navbar from "../components/navbar";
 import data from "../geojson/data.json";
-import buildings from "../geojson/buildings.json";
-import water_areas from "../geojson/water_areas.json";
-import dataroad from "../geojson/map.json";
-import datamap from "../geojson/admin_units_level6.json";
-import { createMap } from "./mapnew";
-import overMap from "./topographic";
 import { showLocationDetail } from "./showinformation";
 
-const roads = require("../geojson/road.geojson");
 
 export function markerImage(map: Map) {
-  const markerImageUnit = [];
+  const markerImageList = [];
 
   for (const feature of data.features) {
     const el = document.createElement("div");
@@ -38,7 +25,7 @@ export function markerImage(map: Map) {
       .setLngLat(feature.geometry.coordinates as maplibregl.LngLatLike)
       .addTo(map);
 
-    markerImageUnit.push({ marker: marker2, feature });
+    markerImageList.push({ marker: marker2, feature });
 
     document.getElementById("shopping")?.addEventListener("change", function () {
         const shoppingCheckbox = this as HTMLInputElement;
@@ -105,13 +92,9 @@ export function markerImage(map: Map) {
     .setLngLat([109.240512, 12.218791])
     .addTo(map);
 
-  markerImageUnit.forEach((e) => {
-    e.marker
-      .getElement()
-      .addEventListener(
-        "click",
-        createMarkerClickHandler(e.feature, marker, map)
-      );
+  markerImageList.forEach((e) => {
+    e.marker.getElement()
+      .addEventListener("click",createMarkerClickHandler(e.feature, marker, map));
   });
   return marker;
 }
